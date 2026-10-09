@@ -20,6 +20,18 @@ data class CountdownInfo(
     val shortLabel: String
 )
 
+data class LiveCountdown(
+    val days: Long,
+    val hours: Long,
+    val minutes: Long,
+    val seconds: Long,
+    val totalSecondsRemaining: Long,
+    val isToday: Boolean,
+    val isPassed: Boolean,
+    val status: CountdownStatus,
+    val formattedCompact: String
+)
+
 object DateUtils {
 
     private val displayFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
@@ -89,5 +101,65 @@ object DateUtils {
                 shortLabel = "${days}d left"
             )
         }
+    }
+
+    /**
+     * Calculates high-precision real-time countdown down to the exact second.
+     */
+    fun calculateLiveCountdown(examDateMillis: Long, currentMillis: Long = System.currentTimeMillis()): LiveCountdown {
+        val examStart = startOfDay(examDateMillis)
+        val todayStart = startOfDay(currentMillis)
+        // Default target exam moment: 9:00 AM on the scheduled exam day
+        val examTargetMillis = examStart + TimeUnit.HOURS.toMillis(9)
+        val endOfExamDay = examStart + TimeUnit.DAYS.toMillis(1)
+
+        val diffToTarget = examTargetMillis - currentMillis
+        val isToday = currentMillis in examStart until endOfExamDay
+        val isPassed = currentMillis >= endOfExamDay
+
+        if (isPassed) {
+            return LiveCountdown(
+                days = 0,
+                hours = 0,
+                minutes = 0,
+                seconds = 0,
+                totalSecondsRemaining = 0,
+                isToday = false,
+                isPassed = true,
+                status = CountdownStatus.PASSED,
+                formattedCompact = "Exam completed"
+            )
+        }
+
+        val effectiveDiff = if (diffToTarget > 0) diffToTarget else (endOfExamDay - currentMillis).coerceAtLeast(0)
+        val totalSec = effectiveDiff / 1000
+        val days = totalSec / (24 * 3600)
+        val hours = (totalSec % (24 * 3600)) / 3600
+        val minutes = (totalSec % 3600) / 60
+        val seconds = totalSec % 60
+
+        val status = when {
+            isToday -> CountdownStatus.TODAY
+            days in 1..3 -> CountdownStatus.URGENT
+            else -> CountdownStatus.UPCOMING
+        }
+
+        val formatted = if (days > 0) {
+            String.format(Locale.getDefault(), "%dd %02dh %02dm %02ds", days, hours, minutes, seconds)
+        } else {
+            String.format(Locale.getDefault(), "%02dh %02dm %02ds", hours, minutes, seconds)
+        }
+
+        return LiveCountdown(
+            days = days,
+            hours = hours,
+            minutes = minutes,
+            seconds = seconds,
+            totalSecondsRemaining = totalSec,
+            isToday = isToday,
+            isPassed = false,
+            status = status,
+            formattedCompact = formatted
+        )
     }
 }

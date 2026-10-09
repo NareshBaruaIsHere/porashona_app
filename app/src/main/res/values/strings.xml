@@ -29,9 +29,11 @@
     <string name="dark_mode_title">Dark Theme</string>
     <string name="dark_mode_desc">System, Light, or Dark</string>
     <string name="about_title">About Porashona</string>
-    <string name="version_info">Version 1.0</string>
+    <string name="version_info">Version 3.0</string>
     <string name="privacy_policy_title">Privacy Policy</string>
-    <string name="privacy_policy_desc">100% offline. No data leaves your device.</string>
+    <string name="privacy_policy_desc">Tap to view policy</string>
+    <string name="about_dialog_desc">Porashona is a minimalist, distraction-free study countdown and syllabus checklist crafted for students. Built for fast glances, zero login friction, and real-time second-by-second countdowns.</string>
+    <string name="privacy_policy_dialog_desc">Porashona respects your privacy.\n\nNo accounts, no analytics, and no third-party tracking. All your exam dates, syllabus topics, and checklist completion statuses are stored locally on your device.</string>
     <string name="developer_title">Developer</string>
     <string name="developer_name">Naresh Barua</string>
     <string name="view_on_github">View on GitHub</string>

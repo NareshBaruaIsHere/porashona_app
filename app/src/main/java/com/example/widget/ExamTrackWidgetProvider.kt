@@ -105,10 +105,10 @@ class ExamTrackWidgetProvider : AppWidgetProvider() {
                             views.setTextViewText(R.id.widget_label, "NEXT EXAM")
                         }
                     } else {
-                        views.setTextViewText(R.id.widget_label, "EXAMTRACK")
+                        views.setTextViewText(R.id.widget_label, "PORASHONA")
                         views.setTextViewText(R.id.widget_countdown_number, "No Exams")
                         views.setTextViewText(R.id.widget_subject_name, "Tap to add your first exam")
-                        views.setTextViewText(R.id.widget_exam_date, "Offline & ready to track")
+                        views.setTextViewText(R.id.widget_exam_date, "Open app to schedule")
                         views.setViewVisibility(R.id.widget_progress_bar, View.GONE)
                         views.setViewVisibility(R.id.widget_progress_text, View.GONE)
                     }

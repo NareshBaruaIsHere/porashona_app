@@ -395,11 +395,11 @@ fun CountdownHeroCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp, horizontal = 20.dp),
+                .padding(vertical = 20.dp, horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "COUNTDOWN",
+                text = "REAL-TIME EXAM COUNTDOWN",
                 style = MaterialTheme.typography.labelSmall.copy(
                     letterSpacing = 1.2.sp,
                     fontWeight = FontWeight.Bold
@@ -407,19 +407,15 @@ fun CountdownHeroCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            // Large Bold Countdown Number
-            Text(
-                text = countdown.displayLabel,
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 40.sp,
-                    fontWeight = FontWeight.ExtraBold
-                ),
-                color = primaryTextColor
+            // Live Real-Time Digital Countdown Timer (Days, Hours, Minutes, Seconds)
+            com.example.ui.components.RealtimeCountdownTimer(
+                examDateMillis = examDate,
+                accentColor = primaryTextColor
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -433,7 +429,7 @@ fun CountdownHeroCard(
                 )
                 Text(
                     text = DateUtils.formatFullDate(examDate),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }

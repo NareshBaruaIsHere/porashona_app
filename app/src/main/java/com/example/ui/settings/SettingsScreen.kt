@@ -29,10 +29,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Security
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,10 +48,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -82,6 +88,9 @@ fun SettingsScreen(
     ) { isGranted ->
         viewModel.toggleNotifications(isGranted)
     }
+
+    var showAboutDialog by remember { mutableStateOf(false) }
+    var showPrivacyDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -239,7 +248,7 @@ fun SettingsScreen(
                     }
                 }
 
-                // 3. About ExamTrack Card
+                // 3. About Porashona Card
                 SettingsCard(
                     icon = {
                         SettingCircleIcon(
@@ -249,7 +258,9 @@ fun SettingsScreen(
                         )
                     },
                     title = stringResource(R.string.about_title),
-                    subtitle = stringResource(R.string.version_info)
+                    subtitle = stringResource(R.string.version_info),
+                    onClick = { showAboutDialog = true },
+                    modifier = Modifier.testTag("about_settings_card")
                 )
 
                 // 4. Privacy Policy Card
@@ -262,7 +273,9 @@ fun SettingsScreen(
                         )
                     },
                     title = stringResource(R.string.privacy_policy_title),
-                    subtitle = stringResource(R.string.privacy_policy_desc)
+                    subtitle = stringResource(R.string.privacy_policy_desc),
+                    onClick = { showPrivacyDialog = true },
+                    modifier = Modifier.testTag("privacy_settings_card")
                 )
 
                 // 5. Developer Card
@@ -372,6 +385,87 @@ fun SettingsScreen(
             }
         }
     }
+
+    // About App Popup Dialog
+    if (showAboutDialog) {
+        AlertDialog(
+            onDismissRequest = { showAboutDialog = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(28.dp)
+                )
+            },
+            title = {
+                Text(
+                    text = stringResource(R.string.about_title),
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = stringResource(R.string.version_info),
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = stringResource(R.string.about_dialog_desc),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 20.sp
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { showAboutDialog = false },
+                    modifier = Modifier.testTag("close_about_dialog_button")
+                ) {
+                    Text("Close")
+                }
+            }
+        )
+    }
+
+    // Privacy Policy Popup Dialog
+    if (showPrivacyDialog) {
+        AlertDialog(
+            onDismissRequest = { showPrivacyDialog = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Security,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(28.dp)
+                )
+            },
+            title = {
+                Text(
+                    text = stringResource(R.string.privacy_policy_title),
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.privacy_policy_dialog_desc),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    lineHeight = 20.sp
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { showPrivacyDialog = false },
+                    modifier = Modifier.testTag("close_privacy_dialog_button")
+                ) {
+                    Text("Close")
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -380,10 +474,15 @@ private fun SettingsCard(
     title: String,
     subtitle: String,
     trailing: (@Composable () -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .then(
+                if (onClick != null) Modifier.clickable { onClick() } else Modifier
+            ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -426,6 +525,13 @@ private fun SettingsCard(
             if (trailing != null) {
                 Spacer(modifier = Modifier.width(8.dp))
                 trailing()
+            } else if (onClick != null) {
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    modifier = Modifier.size(18.dp)
+                )
             }
         }
     }

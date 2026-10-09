@@ -466,7 +466,15 @@ fun CumulativeStatisticsView(
             }
         }
 
-        // 3. Syllabus Breakdown Per Subject
+        // 3. D3/Recharts-inspired Syllabus Progress Chart
+        item(key = "progress_chart") {
+            com.example.ui.components.SyllabusProgressChart(
+                subjects = uiState.subjects,
+                onSubjectClick = onSubjectClick
+            )
+        }
+
+        // 4. Syllabus Breakdown Per Subject
         item(key = "breakdown_header") {
             Text(
                 text = "Subject Completion Breakdown",
@@ -808,21 +816,32 @@ fun SubjectCardItem(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Date label
+                // Date label & Real-Time Countdown
                 Row(
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = DateUtils.formatExamDate(subject.examDate),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = DateUtils.formatExamDate(subject.examDate),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    com.example.ui.components.CompactRealtimeCountdown(
+                        examDateMillis = subject.examDate,
+                        textColor = MaterialTheme.colorScheme.primary
                     )
                 }
 
